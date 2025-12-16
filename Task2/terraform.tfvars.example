@@ -1,0 +1,4 @@
+project_id      = ""  #Add project name
+region          = "us-central1"
+container_image = "saqlainkhan/simple-time-service"
+app_port        = 80

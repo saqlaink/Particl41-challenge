@@ -1,30 +1,58 @@
-# SimpleTimeService – GCP (Terraform + GKE)
+# GKE Terraform Infrastructure
 
-This repository provisions GCP infrastructure using Terraform and deploys
-the SimpleTimeService container on Google Kubernetes Engine.
+This project deploys a **private GKE cluster** and runs a containerized web application,
+exposed publicly using a **GCP LoadBalancer**.
+
+---
 
 ## Prerequisites
 - Terraform >= 1.5
 - gcloud CLI
-- kubectl
+- Access to the GCP project
 
-## Authentication
+---
+
+## Authenticate to GCP
+
 ```bash
+gcloud auth login
 gcloud auth application-default login
-Deploy
+gcloud auth application-default set-quota-project gcp-terraform-481311
+gcloud config set project gcp-terraform-481311
+Enable Required APIs
 bash
 Copy code
-cd terraform
+gcloud services enable \
+  container.googleapis.com \
+  compute.googleapis.com \
+  iam.googleapis.com \
+  cloudresourcemanager.googleapis.com \
+  serviceusage.googleapis.com \
+  --project=gcp-terraform-481311
+Deploy Infrastructure
+bash
+Copy code
 terraform init
-terraform apply -var-file=envs/dev/terraform.tfvars
-Access
+terraform plan
+terraform apply
+Access the Application
+Terraform will output a public IP address:
+
 bash
 Copy code
-kubectl get ingress -n simple-time-service
-curl http://<LB-IP>/
-Notes
-GKE nodes run in private subnets
+curl http://<LOAD_BALANCER_IP>
+Architecture Notes
+GKE nodes run in private subnets only
 
-Public access via GCP Load Balancer
+No public IPs on worker nodes
 
-No credentials committed
+Only the Load Balancer is public
+
+No credentials are stored in this repository
+
+Node disk size reduced to avoid regional SSD quota issues
+
+Cleanup
+bash
+Copy code
+terraform destroy

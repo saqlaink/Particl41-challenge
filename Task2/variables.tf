@@ -9,13 +9,19 @@ variable "region" {
   default     = "us-central1"
 }
 
-variable "app_name" {
-  description = "Application name"
+variable "network_cidr" {
+  description = "VPC CIDR range"
   type        = string
-  default     = "container-app"
+  default     = "10.0.0.0/16"
 }
 
 variable "container_image" {
-  description = "Container image to deploy"
+  description = "Docker image to deploy"
   type        = string
+}
+
+variable "app_port" {
+  description = "Container port exposed by the app"
+  type        = number
+  default     = 80
 }
